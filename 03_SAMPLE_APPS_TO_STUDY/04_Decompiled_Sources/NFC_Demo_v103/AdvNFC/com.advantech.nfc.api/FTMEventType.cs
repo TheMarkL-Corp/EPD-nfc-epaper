@@ -1,0 +1,12 @@
+namespace com.advantech.nfc.api
+{
+	public enum FTMEventType
+	{
+		FTMEVENT_WAIT,
+		FTMEVENT_TAG_FOUND,
+		FTMEVENT_RX_MESSAGE,
+		FTMEVENT_TX_MESSAGE,
+		FTMEVENT_EXCEPTION,
+		FTMEVENT_RESET
+	}
+}

@@ -1,0 +1,420 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>AdvNFCWrap</name>
+    </assembly>
+    <members>
+        <member name="T:AdvNFCWrap.Constants">
+            <summary>
+            Error message of send command to tag
+            </summary>
+        </member>
+        <member name="T:AdvNFCWrap.NFCError">
+            <summary>
+            Error message of send command to tag
+            </summary>
+        </member>
+        <member name="F:AdvNFCWrap.NFCError.NFC_MSG_SUCCESS">
+            <summary>
+            Success
+            </summary>
+            <value>
+             0000
+            </value>
+        </member>
+        <member name="F:AdvNFCWrap.NFCError.NFC_MSG_PORT_EMPTY">
+            <summary>
+            Port is empty
+            </summary>
+            <value>
+             0101
+            </value>
+        </member>
+        <member name="F:AdvNFCWrap.NFCError.NFC_MSG_TAG_NOREADY">
+            <summary>
+            Tag not ready
+            </summary>
+            <value>
+             0201
+            </value>
+        </member>
+        <member name="F:AdvNFCWrap.NFCError.NFC_MSG_TAG_COMMAND_ERROR">
+            <summary>
+            Tag command error
+            </summary>
+            <value>
+             0202
+            </value>
+        </member>
+        <member name="F:AdvNFCWrap.NFCError.NFC_MSG_TAG_FW_NO_SUPPORT">
+            <summary>
+            Tag firmware version not support
+            </summary>
+            <value>
+             0203
+            </value>
+        </member>
+        <member name="F:AdvNFCWrap.NFCError.NFC_MSG_DATA_LENGTH_TOOLARGE">
+            <summary>
+            Data length too large
+            </summary>
+            <value>
+             0301
+            </value>
+        </member>
+        <member name="F:AdvNFCWrap.NFCError.NFC_MSG_OTA_FILE_EMPTY">
+            <summary>
+            Data length too large
+            </summary>
+            <value>
+             0301
+            </value>
+        </member>
+        <member name="F:AdvNFCWrap.NFCError.NFC_MSG_OTA_FORMAT_ILLEGAl">
+            <summary>
+            Data length too large
+            </summary>
+            <value>
+             0301
+            </value>
+        </member>
+        <member name="T:AdvNFCWrap.NFCWrap">
+            <summary>
+            Encapsulated NFC dll library, read / write tag data and refresh images
+            </summary>
+        </member>
+        <member name="P:AdvNFCWrap.NFCWrap.TagStateListener">
+            <summary>
+            Callback function when the tag status changes
+            </summary>
+        </member>
+        <member name="P:AdvNFCWrap.NFCWrap.ProcessStateListener">
+            <summary>
+            Callback function while refresh image
+            </summary>
+        </member>
+        <member name="F:AdvNFCWrap.NFCWrap.nTagState.NFC_TAG_STATE_TAG_OFF">
+            <summary>
+            Tag is offline
+            </summary>
+        </member>
+        <member name="F:AdvNFCWrap.NFCWrap.nTagState.NFC_TAG_STATE_TAG_ON">
+            <summary>
+            Tag is connect on reader 
+            </summary>
+        </member>
+        <member name="F:AdvNFCWrap.NFCWrap.nTagState.NFC_TAG_STATE_COMM_ON">
+            <summary>
+            Tag is ready
+            </summary>
+        </member>
+        <member name="M:AdvNFCWrap.NFCWrap.#ctor">
+            <summary>
+            Empty constructor, from which to call functions
+            </summary>
+        </member>
+        <member name="M:AdvNFCWrap.NFCWrap.#ctor(System.String)">
+            <summary>
+            Connect the NFC reader from the given port
+            </summary>
+            <param name="strPort">the port name of reader connected</param>
+        </member>
+        <member name="M:AdvNFCWrap.NFCWrap.GetPort">
+            <summary>
+            Detect the port connected to the NFC reader
+            </summary>
+            <returns>Port string/<see cref="T:AdvNFCWrap.NFCError"/></returns>
+            <example>
+            <code>
+            String strReturn = oNFC.GetPort();
+            Console.WriteLine(new NFCError(strResult).Content);
+            </code>
+            </example>
+        </member>
+        <member name="M:AdvNFCWrap.NFCWrap.ConnectTag">
+            <summary>
+            Connect tag
+            </summary>
+            <returns>
+            <see cref="T:AdvNFCWrap.NFCError"/>
+            </returns>
+            <example>
+            <code>
+            String strReturn = oNFC.ConnectTag();
+            Console.WriteLine(new NFCError(strResult).Content);
+            </code>
+            </example>
+        </member>
+        <member name="M:AdvNFCWrap.NFCWrap.ConnectTagAsync">
+            <summary>
+            Connect tag and return connect status
+            </summary>
+            <returns>
+            <see cref="T:AdvNFCWrap.NFCError"/>
+            </returns>
+            <example>
+            <code>
+            String strReturn = await oNFC.ConnectTagAsync();
+            Console.WriteLine(new NFCError(strResult).Content);
+            </code>
+            </example>
+        </member>
+        <member name="M:AdvNFCWrap.NFCWrap.DisconnectTag">
+            <summary>
+            Disconnect tag
+            </summary>
+            <returns>
+            <see cref="T:AdvNFCWrap.NFCError"/>
+            </returns>
+            <example>
+            <code>
+            String strReturn = oNFC.DisconnectTag();
+            Console.WriteLine(new NFCError(strResult).Content);
+            </code>
+            </example>
+        </member>
+        <member name="M:AdvNFCWrap.NFCWrap.GetTagID">
+            <summary>
+            Get tag ID
+            </summary>
+            <returns>ID/<see cref="T:AdvNFCWrap.NFCError"/></returns>
+            <example>
+            <code>
+            String strReturn = oNFC.GetTagID();
+            Console.WriteLine(new NFCError(strResult).Content);
+            </code>
+            </example>
+        </member>
+        <member name="M:AdvNFCWrap.NFCWrap.GetVersion">
+            <summary>
+            Get tag version
+            </summary>
+            <returns>Version/<see cref="T:AdvNFCWrap.NFCError"/></returns>
+            <example>
+            <code>
+            String strReturn = oNFC.GetVersion();
+            Console.WriteLine(new NFCError(strResult).Content);
+            </code>
+            </example>
+        </member>
+        <member name="M:AdvNFCWrap.NFCWrap.GetPlatformName">
+            <summary>
+            Get tag platform name
+            </summary>
+            <returns>platform name/<see cref="T:AdvNFCWrap.NFCError"/></returns>
+            <example>
+            <code>
+            String strReturn = oNFC.GetPlatformName();
+            Console.WriteLine(new NFCError(strResult).Content);
+            </code>
+            </example>
+        </member>
+        <member name="M:AdvNFCWrap.NFCWrap.GetSN">
+            <summary>
+            Get tag serial number
+            </summary>
+            <returns>Serial number/<see cref="T:AdvNFCWrap.NFCError"/></returns>
+            <example>
+            <code>
+            String strReturn = oNFC.GetSN();
+            Console.WriteLine(new NFCError(strResult).Content);
+            </code>
+            </example>
+        </member>
+        <member name="M:AdvNFCWrap.NFCWrap.SetPingCode(System.String)">
+            <summary>
+            Set a new ping code of tag, rember to ulock first
+            </summary>
+            <param name="strData"> new ping code</param>
+            <returns><see cref="T:AdvNFCWrap.NFCError"/></returns>
+            <example>
+            <code>
+            String strReturn = oNFC.SetPingCode("0000");
+            Console.WriteLine(new NFCError(strResult).Content);
+            </code>
+            </example>
+        </member>
+        <member name="M:AdvNFCWrap.NFCWrap.GetPinCodeStatus">
+            <summary>
+            Get ping code status
+            </summary>
+            <returns>Port string/<see cref="T:AdvNFCWrap.NFCError"/></returns>
+            <example>
+            <code>
+            String strReturn = oNFC.GetPinCodeStatus();
+            Console.WriteLine(new NFCError(strResult).Content);
+            </code>
+            </example>
+        </member>
+        <member name="M:AdvNFCWrap.NFCWrap.UnlockPinCode(System.String)">
+            <summary>
+            Unlock tag with ping code
+            </summary>
+            <param name="strData">ping code</param>
+            <returns><see cref="T:AdvNFCWrap.NFCError"/></returns>
+            <example>
+            <code>
+            String strReturn = oNFC.UnlockPinCode("0000");
+            Console.WriteLine(new NFCError(strResult).Content);
+            </code>
+            </example>
+        </member>
+        <member name="M:AdvNFCWrap.NFCWrap.DrawImage(System.Drawing.Bitmap)">
+            <summary>
+            Send a image to tag and refresh
+            </summary>
+            <param name="oImage">image object</param>
+            <returns><see cref="T:AdvNFCWrap.NFCError"/></returns>
+            <example>
+            <code>
+            String strReturn = oNFC.DrawImage(oImage);
+            Console.WriteLine(new NFCError(strResult).Content);
+            </code>
+            </example>
+        </member>
+        <member name="M:AdvNFCWrap.NFCWrap.DrawImage(System.Drawing.Bitmap,System.Boolean)">
+            <summary>
+            Send a image to tag and refresh
+            </summary>
+            <param name="oImage">image object</param>
+            <param name="bDithering">dithering</param>
+            <returns><see cref="T:AdvNFCWrap.NFCError"/></returns>
+            <example>
+            <code>
+            String strReturn = oNFC.DrawImage(oImage, bDithering);
+            Console.WriteLine(new NFCError(strResult).Content);
+            </code>
+            </example>
+        </member>
+        <member name="M:AdvNFCWrap.NFCWrap.DrawImageAsync(System.Drawing.Bitmap)">
+            <summary>
+            Send a image to tag and refresh and return display image status
+            </summary>
+            <param name="oImage">image object</param>
+            <returns>OK/<see cref="T:AdvNFCWrap.NFCError"/></returns>
+            <example>
+            <code>
+            String strReturn = await oNFC.DrawImageAsync(oImage);
+            Console.WriteLine(new NFCError(strResult).Content);
+            </code>
+            </example>
+        </member>
+        <member name="M:AdvNFCWrap.NFCWrap.DrawImageAsync(System.Drawing.Bitmap,System.Boolean)">
+            <summary>
+            Send a image to tag and refresh and return display image status
+            </summary>
+            <param name="oImage">image object</param>
+            <param name="bDithering">dithering</param>
+            <returns>OK/<see cref="T:AdvNFCWrap.NFCError"/></returns>
+            <example>
+            <code>
+            String strReturn = oNFC.SystemRest();
+            Console.WriteLine(new NFCError(strResult).Content);
+            </code>
+            </example>
+        </member>
+        <member name="M:AdvNFCWrap.NFCWrap.SystemRest">
+            <summary>
+            reset Pin code to default (0000)
+            </summary>
+            <returns>OK/<see cref="T:AdvNFCWrap.NFCError"/></returns>
+            <example>
+            <code>
+            String strReturn = await oNFC.DrawImageAsync(oImage, bDithering);
+            Console.WriteLine(new NFCError(strResult).Content);
+            </code>
+            </example>
+        </member>
+        <member name="M:AdvNFCWrap.NFCWrap.FWUpgrade(System.String,System.Int32)">
+            <summary>
+            FW Upgrade (0000)
+            </summary>
+            <returns>OK/<see cref="T:AdvNFCWrap.NFCError"/></returns>
+            <example>
+            <code>
+            String strReturn = await oNFC.DrawImageAsync(oImage, bDithering);
+            Console.WriteLine(new NFCError(strResult).Content);
+            </code>
+            </example>
+        </member>
+        <member name="M:AdvNFCWrap.NFCWrap.onTagStateChange(com.advantech.nfc.NFCTagState)">
+            <summary>
+            Callback function while tag state changed
+            </summary>
+        </member>
+        <member name="M:AdvNFCWrap.NFCWrap.onProgress(com.advantech.nfc.DrawImageState,System.Object)">
+            <summary>
+            Callback function while refresh image
+            </summary>
+        </member>
+        <member name="M:AdvNFCWrap.NFCWrap.onProgress(com.advantech.nfc.SendDataState,System.Object)">
+            <summary>
+            Callback function while Big Data for OTA
+            </summary>
+        </member>
+        <member name="M:AdvNFCWrap.NFCWrap.GetTagData">
+            <summary>
+            Get user data from tag
+            </summary>
+            <returns>Tag data/<see cref="T:AdvNFCWrap.NFCError"/></returns>
+            <example>
+            <code>
+            String strReturn = oNFC.GetTagData();
+            Console.WriteLine(new NFCError(strResult).Content);
+            </code>
+            </example>
+        </member>
+        <member name="M:AdvNFCWrap.NFCWrap.WriteTagData(System.String)">
+            <summary>
+            Write user data to tag
+            </summary>
+            <param name="strData">tag data</param>
+            <returns>Result/<see cref="T:AdvNFCWrap.NFCError"/></returns>
+            <example>
+            <code>
+            String strReturn = oNFC.GetTagData(strData);
+            Console.WriteLine(new NFCError(strResult).Content);
+            </code>
+            </example>
+        </member>
+        <member name="M:AdvNFCWrap.NFCWrap.GetTagDataFlash">
+            <summary>
+            Get user data from tag to flash <br/>
+            <b>Only supprot upper FW version <span style="color:red;">3.0.0</span></b> 
+            </summary>
+            <returns>Tag data/<see cref="T:AdvNFCWrap.NFCError"/></returns>
+            <example>
+            <code>
+            String strReturn = oNFC.GetTagData();
+            Console.WriteLine(new NFCError(strResult).Content);
+            </code>
+            </example>
+        </member>
+        <member name="M:AdvNFCWrap.NFCWrap.WriteTagDataFlash(System.String)">
+            <summary>
+            Write user data to tag to flash <br/>
+            <b>Only supprot upper FW version <span style="color:red;">3.0.0</span></b> 
+            </summary>
+            <param name="strData">tag data</param>
+            <returns>Result/<see cref="T:AdvNFCWrap.NFCError"/></returns>
+            <example>
+            <code>
+            String strReturn = oNFC.GetTagData(strData);
+            Console.WriteLine(new NFCError(strResult).Content);
+            </code>
+            </example>
+        </member>
+        <member name="M:AdvNFCWrap.NFCWrap.DoDithering(System.Drawing.Bitmap,System.Drawing.Size)">
+            <summary>
+            Get user data from tag
+            </summary>
+            <returns>Tag data/<see cref="T:AdvNFCWrap.NFCError"/></returns>
+            <example>
+            <code>
+            String strReturn = oNFC.GetTagData();
+            Console.WriteLine(new NFCError(strResult).Content);
+            </code>
+            </example>
+        </member>
+    </members>
+</doc>

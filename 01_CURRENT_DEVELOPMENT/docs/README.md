@@ -1,0 +1,57 @@
+﻿# MedTRx EPD v1.0.1: 2.13" NFC E-Paper Programmer
+
+## 1. Overview
+**MedTRx EPD** (v1.0.1) is a lightweight, portable Windows Forms application for designing and wirelessly programming **2.13-inch (296x128 B/W) EPD-210 NFC E-Paper tags** using standard 13.56 MHz RFID readers.
+
+It incorporates the latest protocol and driver engine from the Linchun SDK, featuring automatic firmware negotiation to prevent inverted or mirrored screen flashing on newer DKE hardware panels.
+
+---
+
+## 2. Key Features in v1.0.1
+- **Dual Language Support (English & 繁體中文 Traditional Chinese)**:
+  - Instant on-the-fly language switching via the top-right dropdown.
+  - Remembers the user's preferred language automatically.
+- **Smart Non-Blocking COM Port Detection**:
+  - **Zero UI Freezing**: Port probing and refresh execute asynchronously in background tasks.
+  - **Memory of Last Port**: Automatically prioritizes and connects to the last successfully connected COM port.
+  - Probes and verifies the Jogtek Tag Reader via `RFID_OpenReader` + `RFID_FWVersion`.
+- **Dual Style Selector (with Instant WYSIWYG Preview)**:
+  - **Style B (Clean White) [Default]**: Full white canvas with upper-left subtitle and prominent lower title.
+  - **Style A (Black Header Banner)**: Black header bar with white subtitle and lower white main title.
+- **Enhanced Typography & Alignment**:
+  - **Line 2 (Upper Subtitle)**: Positioned at the upper-left corner.
+  - **Line 1 (Lower Main Title)**: Positioned on the lower half with a prominent large font and dynamic auto-scaling.
+- **Blank Line Support**: Leaving any line blank keeps that section clean without drawing placeholder text.
+- **Live Visual Status Indicators**:
+  - 🔴 **Red**: No tag detected on RF field.
+  - 🟡 **Yellow**: Tag detected on reader (reading UID & performing handshake).
+  - 🟢 **Green**: Tag ready to program (shows UID & Firmware Version).
+- **One-Click Tag Flashing**: High-speed ST25DV Fast Transfer Mode (FTM) flashing with progress bar, duration counter, and beep sound upon completion.
+- **Fully Portable**: Self-contained with all native and managed dependencies included.
+
+---
+
+## 3. Directory Layout
+```
+AG_EPD Tag/
+├── MedTRx_EPD.exe               # Main Executable v1.0.1 (with embedded logo.ico)
+├── AG_EPD_Tag.exe               # Alias Executable
+├── AG_EPD_Tag.exe.config        # .NET 4.6.1+ Configuration
+├── logo.ico                     # Application Icon
+├── app_settings.ini             # Persistent User Settings (Language, Port, Style)
+├── AdvNFC.dll                   # Core Protocol & State Engine
+├── RFID.dll                     # Serial & ISO 15693 Driver
+├── statemap.dll                 # State Machine Compiler Engine
+├── Lz4Net.dll                   # High-Speed Compression Wrapper
+├── x86/lz4X86.dll               # 32-bit Native LZ4 Core
+├── x64/lz4X64.dll               # 64-bit Native LZ4 Core
+├── docs/                        # Architecture & User Documentation
+└── src/                         # Full C# Source Code & Project Files
+```
+
+---
+
+## 4. Requirements
+- Windows 7 / 8 / 10 / 11 (32-bit or 64-bit)
+- .NET Framework 4.6.1 or higher
+- Jogtek HF RFID Reader connected via USB (Virtual COM Port at 115200 8N1)

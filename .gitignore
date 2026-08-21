@@ -14,5 +14,7 @@ Thumbs.db
 bin/
 obj/
 
-# Internal reverse engineering archive tools
+# Excluded reference, learnings, and internal archive tools
+03_SAMPLE_APPS_TO_STUDY/
+04_LEARNINGS_AND_SPECS/
 _ARCHIVE_TOOLS/

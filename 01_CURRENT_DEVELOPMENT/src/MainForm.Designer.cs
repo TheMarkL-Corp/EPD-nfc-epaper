@@ -1,4 +1,4 @@
-﻿namespace AG_EPD_Tag
+namespace AG_EPD_Tag
 {
     partial class MainForm
     {
@@ -374,7 +374,7 @@
             this.MinimumSize = new System.Drawing.Size(760, 570);
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "MedTRx EPD v1.0.1";
+            this.Text = "MedTRx EPD v1.0.2";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.panelTop.ResumeLayout(false);

@@ -1,20 +1,25 @@
-﻿# MedTRx EPD v1.0.1: 2.13" NFC E-Paper Programmer
+# MedTRx EPD v1.0.2: 2.13" NFC E-Paper Programmer
 
 ## 1. Overview
-**MedTRx EPD** (v1.0.1) is a lightweight, portable Windows Forms application for designing and wirelessly programming **2.13-inch (296x128 B/W) EPD-210 NFC E-Paper tags** using standard 13.56 MHz RFID readers.
+**MedTRx EPD** (v1.0.2) is a lightweight, portable Windows Forms application for designing and wirelessly programming **2.13-inch (296x128 B/W) EPD-210 NFC E-Paper tags** using standard 13.56 MHz RFID readers.
 
 It incorporates the latest protocol and driver engine from the Linchun SDK, featuring automatic firmware negotiation to prevent inverted or mirrored screen flashing on newer DKE hardware panels.
 
 ---
 
-## 2. Key Features in v1.0.1
+## 2. Key Features in v1.0.2
+- **Direct FTDI Hardware PNP Auto-Discovery (`VID_0403` & `PID_6015`)**:
+  - Uses `System.Management` WMI (`Win32_PnPEntity`) to instantly discover and bind to the Jogtek FTDI USB UART bridge without probing Bluetooth ports.
+  - Automatic fallback to sequential probe if WMI is restricted.
+- **Single-Instance Protection & Clean Lifecycle**:
+  - Global application mutex ensures only one instance runs at a time, preventing COM port sharing conflicts.
+  - Automatic resource disposal and reader release on application exit.
 - **Dual Language Support (English & 繁體中文 Traditional Chinese)**:
   - Instant on-the-fly language switching via the top-right dropdown.
   - Remembers the user's preferred language automatically.
-- **Smart Non-Blocking COM Port Detection**:
+- **Smart Non-Blocking COM Port Management**:
   - **Zero UI Freezing**: Port probing and refresh execute asynchronously in background tasks.
   - **Memory of Last Port**: Automatically prioritizes and connects to the last successfully connected COM port.
-  - Probes and verifies the Jogtek Tag Reader via `RFID_OpenReader` + `RFID_FWVersion`.
 - **Dual Style Selector (with Instant WYSIWYG Preview)**:
   - **Style B (Clean White) [Default]**: Full white canvas with upper-left subtitle and prominent lower title.
   - **Style A (Black Header Banner)**: Black header bar with white subtitle and lower white main title.
@@ -33,9 +38,10 @@ It incorporates the latest protocol and driver engine from the Linchun SDK, feat
 
 ## 3. Directory Layout
 ```
-AG_EPD Tag/
-├── MedTRx_EPD.exe               # Main Executable v1.0.1 (with embedded logo.ico)
-├── AG_EPD_Tag.exe               # Alias Executable
+01_CURRENT_DEVELOPMENT/
+├── build.bat                    # 1-Click build script for Windows Command Prompt
+├── build.ps1                    # 1-Click build script for PowerShell
+├── MedTRx_EPD.exe               # Main Executable v1.0.2 (with embedded logo.ico)
 ├── AG_EPD_Tag.exe.config        # .NET 4.6.1+ Configuration
 ├── logo.ico                     # Application Icon
 ├── app_settings.ini             # Persistent User Settings (Language, Port, Style)

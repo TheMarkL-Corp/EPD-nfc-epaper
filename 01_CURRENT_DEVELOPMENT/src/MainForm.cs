@@ -1,9 +1,11 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.IO;
 using System.IO.Ports;
+using System.Management;
 using System.Media;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Forms;
@@ -66,6 +68,10 @@ namespace AG_EPD_Tag
 
             spendTimer = new System.Timers.Timer(100.0);
             spendTimer.Elapsed += SpendTimer_Elapsed;
+
+            // Clean up COM port and resources on process exit
+            Application.ApplicationExit += (s, e) => CloseCurrentConnection();
+            AppDomain.CurrentDomain.ProcessExit += (s, e) => CloseCurrentConnection();
         }
 
         private void LoadApplicationIcon()
@@ -143,11 +149,36 @@ namespace AG_EPD_Tag
 
         #endregion
 
-        #region Asynchronous Non-Blocking Port Management
+        #region Asynchronous Non-Blocking Port Management & FTDI PNP Discovery
 
         private async void btnRefreshPorts_Click(object sender, EventArgs e)
         {
             await ScanAndPopulatePortsAsync();
+        }
+
+        private static string FindFtdiComPort()
+        {
+            try
+            {
+                // Query Win32_PnPEntity for devices matching FTDI VID 0403 & PID 6015 (or FTDIBUS)
+                using (ManagementObjectSearcher searcher = new ManagementObjectSearcher(
+                    "SELECT Caption, DeviceID, PNPDeviceID FROM Win32_PnPEntity WHERE " +
+                    "(DeviceID LIKE '%VID_0403%6015%' OR PNPDeviceID LIKE '%VID_0403%6015%' OR DeviceID LIKE '%FTDIBUS%') " +
+                    "AND Caption LIKE '%(COM%'"))
+                {
+                    foreach (ManagementObject obj in searcher.Get())
+                    {
+                        string caption = obj["Caption"] != null ? obj["Caption"].ToString() : "";
+                        Match match = Regex.Match(caption, @"\((COM\d+)\)", RegexOptions.IgnoreCase);
+                        if (match.Success)
+                        {
+                            return match.Groups[1].Value;
+                        }
+                    }
+                }
+            }
+            catch { }
+            return null;
         }
 
         private async Task ScanAndPopulatePortsAsync()
@@ -163,65 +194,87 @@ namespace AG_EPD_Tag
 
             string lastPort = settings.LastComPort;
 
-            // 1. Get system serial port names in background thread
-            string[] ports = await Task.Run(() =>
+            // 1. First attempt hardware PNP discovery for FTDI VID_0403 & PID_6015
+            string detectedPort = await Task.Run(() =>
+            {
+                string ftdiPort = FindFtdiComPort();
+                if (!string.IsNullOrEmpty(ftdiPort))
+                {
+                    return ftdiPort;
+                }
+
+                // Fallback: Get system ports and probe
+                string[] systemPorts;
+                try { systemPorts = SerialPort.GetPortNames(); }
+                catch { systemPorts = new string[0]; }
+
+                if (!string.IsNullOrEmpty(lastPort) && Array.IndexOf(systemPorts, lastPort) >= 0)
+                {
+                    if (QuickProbePort(lastPort)) return lastPort;
+                }
+
+                foreach (string p in systemPorts)
+                {
+                    if (p == lastPort) continue;
+                    if (QuickProbePort(p)) return p;
+                }
+
+                return null;
+            });
+
+            // 2. Get full list of available ports for the dropdown
+            string[] allPorts = await Task.Run(() =>
             {
                 try { return SerialPort.GetPortNames(); }
                 catch { return new string[0]; }
             });
 
-            // 2. Probe ports non-blockingly to find the Jogtek reader
-            string verifiedReaderPort = await Task.Run(() =>
-            {
-                // First test the last successfully connected port if available
-                if (!string.IsNullOrEmpty(lastPort) && Array.IndexOf(ports, lastPort) >= 0)
-                {
-                    if (QuickProbePort(lastPort))
-                    {
-                        return lastPort;
-                    }
-                }
-
-                // Next test remaining ports
-                foreach (string p in ports)
-                {
-                    if (p == lastPort) continue;
-                    if (QuickProbePort(p))
-                    {
-                        return p;
-                    }
-                }
-                return null;
-            });
-
+            cmbPorts.BeginUpdate();
             cmbPorts.Items.Clear();
-            foreach (string p in ports)
+            foreach (string p in allPorts)
             {
                 cmbPorts.Items.Add(p);
             }
+            if (!string.IsNullOrEmpty(detectedPort) && !cmbPorts.Items.Contains(detectedPort))
+            {
+                cmbPorts.Items.Add(detectedPort);
+            }
 
-            if (ports.Length == 0)
+            string targetPort = null;
+            if (!string.IsNullOrEmpty(detectedPort))
+            {
+                targetPort = detectedPort;
+            }
+            else if (!string.IsNullOrEmpty(lastPort) && cmbPorts.Items.Contains(lastPort))
+            {
+                targetPort = lastPort;
+            }
+            else if (cmbPorts.Items.Count > 0)
+            {
+                targetPort = cmbPorts.Items[0].ToString();
+            }
+
+            if (targetPort != null)
+            {
+                cmbPorts.SelectedItem = targetPort;
+            }
+            cmbPorts.EndUpdate();
+
+            isScanningPorts = false;
+            btnRefreshPorts.Text = Localization.Get("Refresh");
+            btnRefreshPorts.Enabled = true;
+
+            // 3. Explicitly build connection to target port
+            if (cmbPorts.Items.Count == 0 || targetPort == null)
             {
                 lblStatusDot.ForeColor = Color.Red;
                 lblStatusText.Text = Localization.Get("NoPorts");
                 lblTagInfo.Text = Localization.Get("PlugInReader");
             }
-            else if (verifiedReaderPort != null)
-            {
-                cmbPorts.SelectedItem = verifiedReaderPort;
-            }
-            else if (!string.IsNullOrEmpty(lastPort) && Array.IndexOf(ports, lastPort) >= 0)
-            {
-                cmbPorts.SelectedItem = lastPort;
-            }
             else
             {
-                cmbPorts.SelectedIndex = 0;
+                BuildConnection(targetPort);
             }
-
-            isScanningPorts = false;
-            btnRefreshPorts.Text = Localization.Get("Refresh");
-            btnRefreshPorts.Enabled = true;
         }
 
         private static bool QuickProbePort(string portName)
@@ -258,6 +311,10 @@ namespace AG_EPD_Tag
             CloseCurrentConnection();
             try
             {
+                // Pre-close any lingering handle in RFIDAPI to ensure the port is ready for this app
+                RFIDAPI rfid = new RFIDAPI();
+                try { rfid.RFID_CloseReader(portName); } catch { }
+
                 nfc = new D30Command(portName);
                 if (nfc.openNFC())
                 {
@@ -267,6 +324,9 @@ namespace AG_EPD_Tag
                     // Remember this successfully opened port
                     settings.LastComPort = portName;
                     settings.Save();
+
+                    // Set status to waiting for tag
+                    UpdateTagStatusDisplay(NFCTagState.NFC_TAG_STATE_TAG_OFF);
                 }
                 else
                 {
@@ -285,18 +345,21 @@ namespace AG_EPD_Tag
 
         private void CloseCurrentConnection()
         {
-            if (nfc != null)
+            try
             {
-                try
+                UpdateTagStatusDisplay(NFCTagState.NFC_TAG_STATE_TAG_OFF);
+                api = null;
+                if (manager != null)
                 {
-                    UpdateTagStatusDisplay(NFCTagState.NFC_TAG_STATE_TAG_OFF);
-                    api = null;
                     manager.setNFCCommand(null);
-                    nfc.closeNFC();
                 }
-                catch { }
-                nfc = null;
+                if (nfc != null)
+                {
+                    nfc.closeNFC();
+                    nfc = null;
+                }
             }
+            catch { }
         }
 
         #endregion

@@ -1,5 +1,5 @@
 Write-Host "===================================================" -ForegroundColor Cyan
-Write-Host " Building MedTRx EPD v1.0.2 (Windows Forms App)" -ForegroundColor Cyan
+Write-Host " Building MedTRx EPD v1.0.3 (Windows Forms App)" -ForegroundColor Cyan
 Write-Host "===================================================" -ForegroundColor Cyan
 
 $csc = "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe"

@@ -1,7 +1,7 @@
 @echo off
 setlocal
 echo ===================================================
-echo  Building MedTRx EPD v1.0.2 (Windows Forms App)
+echo  Building MedTRx EPD v1.0.3 (Windows Forms App)
 echo ===================================================
 
 set CSC=C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe

@@ -26,7 +26,7 @@ namespace AG_EPD_Tag
             {
                 if (!isNewInstance)
                 {
-                    IntPtr hWnd = FindWindow(null, "MedTRx EPD v1.0.2");
+                    IntPtr hWnd = FindWindow(null, "MedTRx EPD v1.0.3");
                     if (hWnd != IntPtr.Zero)
                     {
                         ShowWindow(hWnd, SW_RESTORE);

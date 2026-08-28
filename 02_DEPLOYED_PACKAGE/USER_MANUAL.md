@@ -1,4 +1,4 @@
-# MedTRx EPD Programmer (v1.0.2) — User Manual / 使用手冊
+# MedTRx EPD Programmer (v1.0.3) — User Manual / 使用手冊
 
 ---
 

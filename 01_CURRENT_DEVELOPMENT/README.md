@@ -1,13 +1,16 @@
-# MedTRx EPD v1.0.2: Current Development Workspace
+# MedTRx EPD v1.0.3: Current Development Workspace
 
 ## 1. Overview
-**MedTRx EPD** (v1.0.2) is a lightweight, portable Windows Forms application for designing and wirelessly programming **2.13-inch (296x128 B/W) EPD-210 NFC E-Paper tags** using standard 13.56 MHz RFID readers.
+**MedTRx EPD** (v1.0.3) is a lightweight, portable Windows Forms application for designing and wirelessly programming **2.13-inch (296x128 B/W) EPD-210 NFC E-Paper tags** using standard 13.56 MHz RFID readers.
 
 It incorporates the latest protocol and driver engine from the Linchun SDK, featuring automatic firmware negotiation to prevent inverted or mirrored screen flashing on newer DKE hardware panels.
 
 ---
 
-## 2. Key Features in v1.0.2
+## 2. Key Features in v1.0.3
+- **High-Visibility Bold Typography & 2D Auto-Scaling**:
+  - **Large Bold Main Title**: Dynamically auto-scales up to 48pt–64pt Bold with 2D width/height boundary fitting, making room/bed numbers (e.g., "501-A") prominent and easy to read from a distance in real-world clinical hospital environments.
+  - **Crisp Header Banner**: Bold 17pt header text with balanced proportions.
 - **Direct FTDI Hardware PNP Auto-Discovery (`VID_0403` & `PID_6015`)**:
   - Uses `System.Management` WMI (`Win32_PnPEntity`) to instantly discover and bind to the Jogtek FTDI USB UART bridge without probing Bluetooth ports.
   - Automatic fallback to sequential probe if WMI is restricted.
@@ -23,9 +26,6 @@ It incorporates the latest protocol and driver engine from the Linchun SDK, feat
 - **Dual Style Selector (with Instant WYSIWYG Preview)**:
   - **Style B (Clean White) [Default]**: Full white canvas with upper-left subtitle and prominent lower title.
   - **Style A (Black Header Banner)**: Black header bar with white subtitle and lower white main title.
-- **Enhanced Typography & Alignment**:
-  - **Line 2 (Upper Subtitle)**: Positioned at the upper-left corner.
-  - **Line 1 (Lower Main Title)**: Positioned on the lower half with a prominent large font and dynamic auto-scaling.
 - **Blank Line Support**: Leaving any line blank keeps that section clean without drawing placeholder text.
 - **Live Visual Status Indicators**:
   - 🔴 **Red**: No tag detected on RF field.
@@ -41,7 +41,7 @@ It incorporates the latest protocol and driver engine from the Linchun SDK, feat
 01_CURRENT_DEVELOPMENT/
 ├── build.bat                    # 1-Click build script for Windows Command Prompt
 ├── build.ps1                    # 1-Click build script for PowerShell
-├── MedTRx_EPD.exe               # Main Executable v1.0.2 (with embedded logo.ico)
+├── MedTRx_EPD.exe               # Main Executable v1.0.3 (with embedded logo.ico)
 ├── AG_EPD_Tag.exe.config        # .NET 4.6.1+ Configuration
 ├── logo.ico                     # Application Icon
 ├── app_settings.ini             # Persistent User Settings (Language, Port, Style)

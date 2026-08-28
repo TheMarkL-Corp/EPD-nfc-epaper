@@ -9,7 +9,7 @@ namespace AG_EPD_Tag
 
         private static readonly Dictionary<string, string> En = new Dictionary<string, string>
         {
-            {"AppTitle", "MedTRx EPD v1.0.2"},
+            {"AppTitle", "MedTRx EPD v1.0.3"},
             {"ComPort", "COM Port:"},
             {"Refresh", "Refresh"},
             {"Scanning", "Scanning..."},
@@ -46,7 +46,7 @@ namespace AG_EPD_Tag
 
         private static readonly Dictionary<string, string> ZhTW = new Dictionary<string, string>
         {
-            {"AppTitle", "MedTRx EPD v1.0.2"},
+            {"AppTitle", "MedTRx EPD v1.0.3"},
             {"ComPort", "序列埠 (COM):"},
             {"Refresh", "重新整理"},
             {"Scanning", "搜尋中..."},
